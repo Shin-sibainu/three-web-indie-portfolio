@@ -1,5 +1,11 @@
-import { useRef } from "react";
-import { Center, Environment, Float, useScroll } from "@react-three/drei";
+import { useRef, useState } from "react";
+import {
+  Center,
+  ContactShadows,
+  Environment,
+  Float,
+  useScroll,
+} from "@react-three/drei";
 
 import { Avatar } from "./Avatar";
 import { SectionTitle } from "./SectionTitle";
@@ -15,12 +21,19 @@ import { CouchSmall } from "./CouchSmall";
 import { Lamp } from "./Lamp";
 import { RoundedBox } from "@react-three/drei";
 import { Monitor } from "./Monitor";
+import { Balloon } from "./Balloon";
+import { Mailbox } from "./Mailbox";
+import { ParkBench } from "./ParkBench";
+import { Pigeon } from "./Pigeon";
 
 import { MathUtils } from "three";
+import { motion } from "framer-motion-3d";
 
 const SECTIONS_DISTANCE = 10;
 
 export const Experience = () => {
+  const [section, setSection] = useState(config.sections[0]);
+
   const sceneContainer = useRef();
   const scrollData = useScroll(); //スクロールオフセットを取得するため
 
@@ -28,6 +41,10 @@ export const Experience = () => {
     //シーングループ丸ごとz軸の負の方向に移動させている。
     sceneContainer.current.position.z =
       -scrollData.offset * SECTIONS_DISTANCE * (scrollData.pages - 1);
+
+    setSection(
+      config.sections[Math.round(scrollData.offset * (scrollData.pages - 1))]
+    );
   });
 
   return (
@@ -35,9 +52,23 @@ export const Experience = () => {
       <Environment preset="sunset" />
       <Avatar />
 
-      <group ref={sceneContainer}>
+      <ContactShadows opacity={0.5} color={"#9c8e66"} scale={[30, 30]} />
+      <mesh rotation-x={-Math.PI / 2} position-y={-0.001}>
+        <planeGeometry args={[100, 100]} />
+        <meshBasicMaterial color="#f5f3ee" />
+      </mesh>
+
+      {/* 歩いている場所に応じてanimate={"home"}, {"skills"}...と変わっている。 */}
+      <motion.group ref={sceneContainer} animate={section}>
         {/* HOME */}
-        <group>
+        <motion.group
+          position-y={-5}
+          variants={{
+            home: {
+              y: 0,
+            },
+          }}
+        >
           <Star position-z={0} position-y={2.2} scale={0.3} />
           <Float>
             <MacBookPro
@@ -78,9 +109,17 @@ export const Experience = () => {
               {config.home.subtitle}
             </SectionTitle>
           </Center>
-        </group>
+        </motion.group>
         {/* SKILLS */}
-        <group position-z={SECTIONS_DISTANCE}>
+        <motion.group
+          position-z={SECTIONS_DISTANCE}
+          position-y={-5}
+          variants={{
+            skills: {
+              y: 0,
+            },
+          }}
+        >
           <group position-x={-2}>
             <SectionTitle position-z={1.5} rotation-y={Math.PI / 6}>
               SKILLS
@@ -107,10 +146,18 @@ export const Experience = () => {
             <sphereGeometry args={[0.7, 64, 64]} />
             <meshStandardMaterial opacity={0.8} transparent color="orange" />
           </mesh> */}
-        </group>
+        </motion.group>
 
         {/* PROJECTS */}
-        <group position-z={2 * SECTIONS_DISTANCE}>
+        <motion.group
+          position-z={2 * SECTIONS_DISTANCE}
+          position-y={-5}
+          variants={{
+            projects: {
+              y: 0,
+            },
+          }}
+        >
           <group position-x={1}>
             <SectionTitle
               position-x={-0.5}
@@ -137,17 +184,61 @@ export const Experience = () => {
               </RoundedBox>
             </group>
           </group>
-        </group>
+        </motion.group>
         {/* CONTACT */}
-        <group position-z={3 * SECTIONS_DISTANCE}>
-          <SectionTitle position-x={0.5}>CONTACT</SectionTitle>
-        </group>
-      </group>
+        <motion.group
+          position-z={3 * SECTIONS_DISTANCE}
+          position-y={-5}
+          variants={{
+            contact: {
+              y: 0,
+            },
+          }}
+        >
+          <SectionTitle position-x={-2} position-z={0.6}>
+            CONTACT
+          </SectionTitle>
+          <group position-x={-2}>
+            <ParkBench
+              scale={0.5}
+              position-x={-0.5}
+              position-z={-2.5}
+              rotation-y={-Math.PI / 4}
+            />
+            <group position-y={2.2} position-z={-0.5}>
+              <Float floatIntensity={2} rotationIntensity={1.5}>
+                <Balloon scale={1.5} position-x={-0.5} color="#71a2d9" />
+              </Float>
+              <Float
+                floatIntensity={1.5}
+                rotationIntensity={2}
+                position-z={0.5}
+              >
+                <Balloon scale={1.3} color="#d97183" />
+              </Float>
+              <Float speed={2} rotationIntensity={2}>
+                <Balloon scale={1.6} position-x={0.4} color="yellow" />
+              </Float>
+            </group>
+          </group>
 
-      {/* <mesh>
-        <boxGeometry />
-        <meshStandardMaterial color="white" />
-      </mesh> */}
+          <Mailbox
+            scale={0.25}
+            rotation-y={1.25 * Math.PI}
+            position-x={1}
+            position-y={0.25}
+            position-z={0.5}
+          />
+          <Float floatIntensity={1.5} speed={3}>
+            <Pigeon
+              position-x={2}
+              position-y={1.5}
+              position-z={-0.5}
+              scale={0.3}
+            />
+          </Float>
+        </motion.group>
+      </motion.group>
     </>
   );
 };

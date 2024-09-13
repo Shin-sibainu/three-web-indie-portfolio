@@ -4,4 +4,7 @@ export const config = {
     title: "THREE InSights",
     subtitle: "Web Development",
   },
+  contact: {
+    mail: "shincodeinc@gmail.com",
+  },
 };
