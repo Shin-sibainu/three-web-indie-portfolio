@@ -42,6 +42,7 @@ export const Experience = () => {
     sceneContainer.current.position.z =
       -scrollData.offset * SECTIONS_DISTANCE * (scrollData.pages - 1);
 
+    //個々のセクションの数字を取得するために、offsetからの四捨五入してセクション位置を把握
     setSection(
       config.sections[Math.round(scrollData.offset * (scrollData.pages - 1))]
     );
@@ -52,10 +53,11 @@ export const Experience = () => {
       <Environment preset="sunset" />
       <Avatar />
 
-      <ContactShadows opacity={0.5} color={"#9c8e66"} scale={[30, 30]} />
+      {/* plane */}
+      <ContactShadows opacity={0.6} color={"#9c8e66"} scale={[30, 30]} />
       <mesh rotation-x={-Math.PI / 2} position-y={-0.001}>
         <planeGeometry args={[100, 100]} />
-        <meshBasicMaterial color="#f5f3ee" />
+        <meshBasicMaterial color="#b0c4de" />
       </mesh>
 
       {/* 歩いている場所に応じてanimate={"home"}, {"skills"}...と変わっている。 */}
@@ -73,7 +75,7 @@ export const Experience = () => {
           <Float>
             <MacBookPro
               position-x={-1.5}
-              position-y={0}
+              position-y={0.3}
               position-z={0}
               scale={0.3}
               rotation-y={Math.PI / 4}
@@ -100,7 +102,8 @@ export const Experience = () => {
           <Center disableY disableZ>
             <SectionTitle
               size={0.7}
-              position-x={-1.5}
+              position-x={-1.8}
+              position-y={0.2}
               position-z={-3}
               bevelEnabled
               bevelThickness={0.3}
@@ -110,6 +113,7 @@ export const Experience = () => {
             </SectionTitle>
           </Center>
         </motion.group>
+
         {/* SKILLS */}
         <motion.group
           position-z={SECTIONS_DISTANCE}
@@ -185,6 +189,7 @@ export const Experience = () => {
             </group>
           </group>
         </motion.group>
+
         {/* CONTACT */}
         <motion.group
           position-z={3 * SECTIONS_DISTANCE}
