@@ -3,10 +3,16 @@ import { useFrame } from "@react-three/fiber";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { config } from "../config";
+import { atom, useAtom } from "jotai";
+
+export const projectAtom = atom(config.projects[0]);
 
 const Interface = () => {
   const scrollData = useScroll();
   const [hasScrolled, setHasScrolled] = useState(false);
+
+  const [_project, setProject] = useAtom(projectAtom);
+
   useFrame(() => {
     setHasScrolled(scrollData.offset > 0);
   });
@@ -107,6 +113,7 @@ const Interface = () => {
           >
             {config.projects.map((project, idx) => (
               <motion.div
+                onMouseEnter={() => setProject(project)}
                 key={project.name}
                 className="project"
                 initial={{ opacity: 0 }}
@@ -139,7 +146,37 @@ const Interface = () => {
         </section>
 
         {/* CONTACT */}
-        <section className="section section--left">CONTACT</section>
+        <section className="section section--left">
+          <motion.div
+            className="contact"
+            whileInView={"visible"}
+            initial={{ opacity: 0 }}
+            variants={{
+              visible: {
+                opacity: 1,
+              },
+            }}
+          >
+            <h1 className="contact__name">{config.contact.name}</h1>
+            <p className="contact__address">{config.contact.address}</p>
+            <div className="contact__socials">
+              <a href={config.contact.socials.twitter} target="_blank">
+                <img
+                  className="contact__socials__icon"
+                  src="icons/twitter.png"
+                  alt="twitter"
+                />
+              </a>
+              <a href={`mailto:${config.contact.mail}`} target="_blank">
+                <img
+                  className="contact__socials__icon"
+                  src="icons/email.png"
+                  alt="email"
+                />
+              </a>
+            </div>
+          </motion.div>
+        </section>
       </div>
     </div>
   );

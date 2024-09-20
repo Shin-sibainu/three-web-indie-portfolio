@@ -4,8 +4,10 @@ Command: npx gltfjsx@6.2.3 public/models/Monitor.glb -o src/components/Monitor.j
 Monitor by Poly by Google [CC-BY] (https://creativecommons.org/licenses/by/3.0/) via Poly Pizza (https://poly.pizza/m/5qZ5IaClHHw)
 */
 
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
+import { useAtom } from "jotai";
 import React from "react";
+import { projectAtom } from "./Interface";
 
 export function Monitor(props) {
   const { nodes, materials } = useGLTF("/models/Monitor.glb");

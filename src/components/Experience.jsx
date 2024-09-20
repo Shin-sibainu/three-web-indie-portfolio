@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Center,
   ContactShadows,
@@ -28,6 +28,7 @@ import { Pigeon } from "./Pigeon";
 
 import { MathUtils } from "three";
 import { motion } from "framer-motion-3d";
+import { MonitorScreen } from "./MonitorScreen";
 
 const SECTIONS_DISTANCE = 10;
 
@@ -36,6 +37,8 @@ export const Experience = () => {
 
   const sceneContainer = useRef();
   const scrollData = useScroll(); //スクロールオフセットを取得するため
+  console.log(scrollData.el.scrollHeight);
+  console.log(scrollData.el.clientHeight);
 
   useFrame(() => {
     //シーングループ丸ごとz軸の負の方向に移動させている。
@@ -48,12 +51,31 @@ export const Experience = () => {
     );
   });
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const sectionIndex = config.sections.indexOf(
+        window.location.hash.replace("#", "")
+      );
+      if (sectionIndex !== -1) {
+        scrollData.el.scrollTo(
+          0,
+          (sectionIndex / (config.sections.length - 1)) *
+            (scrollData.el.scrollHeight - scrollData.el.clientHeight)
+        );
+      }
+    };
+
+    window.addEventListener("hashchange", handleHashChange);
+    handleHashChange();
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, []);
+
   return (
     <>
       <Environment preset="sunset" />
       <Avatar />
 
-      {/* plane */}
+      {/* 地面：plane */}
       <ContactShadows opacity={0.6} color={"#9c8e66"} scale={[30, 30]} />
       <mesh rotation-x={-Math.PI / 2} position-y={-0.001}>
         <planeGeometry args={[100, 100]} />
@@ -182,6 +204,11 @@ export const Experience = () => {
                 rotation-y={-Math.PI / 2}
                 position-y={1}
                 position-z={-1}
+              />
+              <MonitorScreen
+                rotation-x={-0.18}
+                position-z={-0.895}
+                position-y={1.74}
               />
               <RoundedBox scale-x={2} position-z={-1} position-y={0.5}>
                 <meshStandardMaterial color={"white"} />
