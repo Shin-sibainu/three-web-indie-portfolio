@@ -37,8 +37,6 @@ export const Experience = () => {
 
   const sceneContainer = useRef();
   const scrollData = useScroll(); //スクロールオフセットを取得するため
-  console.log(scrollData.el.scrollHeight);
-  console.log(scrollData.el.clientHeight);
 
   useFrame(() => {
     //シーングループ丸ごとz軸の負の方向に移動させている。
